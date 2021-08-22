@@ -43,7 +43,6 @@ def main_menu():
 # Option prompting choosing non existing option
         else:
             print("Unknown option selected")
-    print("Main menu closed")
 
 # Function responsible for displaying menu after logging in
 
@@ -59,6 +58,7 @@ def account_menu(credit_card):
         elif selection == '2':
             print('You have successfully logged out!')
             main_menu()
+            break
         elif selection == '0':
             print("Bye!")
             i = 1
