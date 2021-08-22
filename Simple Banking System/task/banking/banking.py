@@ -24,12 +24,9 @@ def main_menu():
             credit_card_list.append(card)
 # Option number 2 - logging into account
         elif selection == '2':
-            print('You selected 2')
             login = input('Enter your card number: ')
             password = input('Enter your PIN: ')
             for n in credit_card_list:
-                print(n.get_card_number())
-                print(n.get_pin_number())
                 if int(n.get_card_number()) == int(login):
                     if int(n.get_pin_number()) == int(password):
                         print('You have successfully logged in!')
