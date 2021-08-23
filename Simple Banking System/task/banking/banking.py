@@ -44,9 +44,8 @@ def main_menu():
         else:
             print("Unknown option selected")
 
+
 # Function responsible for displaying menu after logging in
-
-
 def account_menu(credit_card):
     while True:
         print('1. Balance')
@@ -65,6 +64,7 @@ def account_menu(credit_card):
             break
 
 
+# Class responsible for creating credit cards
 class CreditCard:
 
     def __init__(self):
@@ -82,6 +82,7 @@ class CreditCard:
         return self.balance
 
 
+# method used to create valid credit card number while using Luhn algorithm
 def card_number_creator():
     temporary_card_number = '400000' + str(randint(100000000, 999999999))
     card_number_list = []
@@ -98,7 +99,8 @@ def card_number_creator():
         i += 1
     sum_of_digits = sum(card_number_list)
     if sum_of_digits % 10 == 0:
-        card_number_list.append(0)
+        card_number = temporary_card_number + '0'
+        return card_number
     else:
         modulo = sum_of_digits % 10
         while modulo % 10 != 0:
