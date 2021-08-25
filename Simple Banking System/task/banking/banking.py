@@ -3,8 +3,10 @@ import sqlite3
 conn = sqlite3.connect('card.s3db')
 cur = conn.cursor()
 
-#cur.execute('DROP TABLE card')
+
 # Function responsible for displaying main menu
+
+
 def main_menu():
     while True:
         print('1. Create an account')
@@ -79,7 +81,9 @@ def account_menu(account_number):
             print('Income was added!')
         elif selection == '3':
             card_number = input('Enter card number:')
-            do_transfer(card_number, account_number)
+            if card_number_validator(card_number) == 1:
+                do_transfer(card_number, account_number)
+
         elif selection == '4':
             cur.execute("DELETE from card WHERE number = " + account_number + "")
             conn.commit()
@@ -132,6 +136,27 @@ def card_number_creator():
     return card_number
 
 
+def card_number_validator(card_n):
+    card_n_list = []
+    for x in card_n:
+        card_n_list.append(x)
+    i = 0
+    while i < len(card_n_list):
+        if (i % 2) == 0:
+            card_n_list[i] = int(card_n_list[i]) * 2
+            if card_n_list[i] > 9:
+                card_n_list[i] -= 9
+        card_n_list[i] = int(card_n_list[i])
+        i += 1
+    sum_of_digits = sum(card_n_list)
+    modulo = sum_of_digits % 10
+    if modulo == 0:
+        return 1
+    else:
+        print("Probably you made a mistake in the card number. Please try again!")
+        return 0
+
+
 def clean_sql_query(word):
     word = word.replace('(', '')
     word = word.replace("'", '')
@@ -165,28 +190,28 @@ def do_transfer(card_number, account_number):
     acc_number = clean_sql_query(acc_number)
     if account_number == card_number:
         print("You can't transfer money to the same account!")
-    elif int(acc_number) == int(card_number):
-            to_transfer = int(input('Enter how much money you want to transfer:'))
-            cur.execute("SELECT balance FROM card WHERE number = " + account_number + "")
-            my_balance = str(cur.fetchone())
-            my_balance = clean_sql_query(my_balance)
-            my_balance = int(my_balance)
-            if my_balance > to_transfer:
-                my_balance -= to_transfer
-                my_balance = str(my_balance)
-                cur.execute("UPDATE card SET balance = " + my_balance + " WHERE number = " + account_number + "")
-                conn.commit()
-                cur.execute("SELECT balance FROM card WHERE number = " + card_number + "")
-                other_balance = str(cur.fetchone())
-                other_balance = clean_sql_query(other_balance)
-                other_balance = int(other_balance)
-                other_balance += to_transfer
-                other_balance = str(other_balance)
-                cur.execute("UPDATE card SET balance = " + other_balance + " WHERE number = " + card_number + "")
-                conn.commit()
-                print('Success!')
-            else:
-                print('Not enough money!')
+    elif acc_number == card_number:
+        to_transfer = int(input('Enter how much money you want to transfer:'))
+        cur.execute("SELECT balance FROM card WHERE number = " + account_number + "")
+        my_balance = str(cur.fetchone())
+        my_balance = clean_sql_query(my_balance)
+        my_balance = int(my_balance)
+        if my_balance > to_transfer:
+            my_balance -= to_transfer
+            my_balance = str(my_balance)
+            cur.execute("UPDATE card SET balance = " + my_balance + " WHERE number = " + account_number + "")
+            conn.commit()
+            cur.execute("SELECT balance FROM card WHERE number = " + card_number + "")
+            other_balance = str(cur.fetchone())
+            other_balance = clean_sql_query(other_balance)
+            other_balance = int(other_balance)
+            other_balance += to_transfer
+            other_balance = str(other_balance)
+            cur.execute("UPDATE card SET balance = " + other_balance + " WHERE number = " + card_number + "")
+            conn.commit()
+            print('Success!')
+        else:
+            print('Not enough money!')
     else:
         print('Such a card does not exist')
 
